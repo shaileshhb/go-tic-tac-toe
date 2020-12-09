@@ -128,29 +128,48 @@ func main() {
 
 }
 
+func checkName(name string) bool {
+
+	for _, str := range name {
+		if (str < 'a' || str > 'z') && (str < 'A' || str > 'Z') {
+			return false
+		}
+	}
+	return true
+}
+
 func getFirstDataFromUser(players *[]player.PlayerDetails) string {
 
 	var player player.PlayerDetails
 	var name string
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print("Enter Your Name:")
-	value, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Please enter a valid name")
-	}
-	name = strings.TrimSpace(value)
+	for true {
 
-	if err != nil {
-		fmt.Println("Please enter a valid name")
-	}
-
-	player.SetPlayerName(name)
-
-	if len(*players) == 0 {
-		player.SetPlayerMark(mark.X)
-	} else {
-		player.SetPlayerMark(mark.O)
+		fmt.Print("Enter Your Name:")
+		value, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Please enter a valid name")
+		}
+		name = strings.TrimSpace(value)
+		validName := checkName(name)
+		if !validName {
+			fmt.Println("Name should only contain alphabets")
+		} else {
+			if len(*players) == 0 {
+				player.SetPlayerName(name)
+				player.SetPlayerMark(mark.X)
+				break
+			} else {
+				if strings.ToLower((*players)[0].PlayerName()) != strings.ToLower(name) {
+					player.SetPlayerName(name)
+					player.SetPlayerMark(mark.O)
+					break
+				} else {
+					fmt.Println("Both players cannot have same name")
+				}
+			}
+		}
 	}
 
 	*players = append(*players, player)
