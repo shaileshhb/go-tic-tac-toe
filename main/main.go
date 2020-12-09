@@ -1,7 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strconv"
+	"strings"
 
 	"github.com/shaileshhb/go-tic-tac-toe/board"
 	"github.com/shaileshhb/go-tic-tac-toe/game"
@@ -17,8 +21,24 @@ func main() {
 	var userBoardSize int
 	var playerName string
 
-	fmt.Print("Enter Board size:")
-	fmt.Scan(&userBoardSize)
+	reader := bufio.NewReader(os.Stdin)
+
+	for true {
+		fmt.Print("Enter Board size:")
+		value, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Please enter a integer for board size")
+		} else {
+			value = strings.TrimSpace(value)
+			userBoardSize, err = strconv.Atoi(value)
+			if err != nil {
+				fmt.Println("Please enter a integer for board size")
+			} else {
+				break
+			}
+
+		}
+	}
 
 	var players []player.PlayerDetails
 	gameboard := board.CreateBoard(userBoardSize)
@@ -29,41 +49,75 @@ func main() {
 	playerName = getFirstDataFromUser(&players)
 	for true {
 		fmt.Print(playerName, " enter cell number:")
-		fmt.Scan(&location)
-		inserted, err := playGame.Play(location)
-		if inserted {
-			break
-		}
+
+		value, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Please enter a valid number")
 		}
+		value = strings.TrimSpace(value)
+		location, err = strconv.Atoi(value)
+		if err != nil {
+			fmt.Println("Please enter a valid number")
+		} else {
+			inserted, err := playGame.Play(location)
+			if err != nil {
+				fmt.Println(err)
+			}
+			if inserted {
+				break
+			}
+
+		}
+
 	}
 	printGameBoard(gameboard)
 
 	playerName = getFirstDataFromUser(&players)
 	for true {
 		fmt.Print(playerName, " enter cell number:")
-		fmt.Scan(&location)
-		inserted, err := playGame.Play(location)
-		if inserted {
-			break
-		}
+
+		value, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Please enter a valid number")
 		}
+		value = strings.TrimSpace(value)
+		location, err = strconv.Atoi(value)
+		if err != nil {
+			fmt.Println("Please enter a valid number")
+		} else {
+			inserted, err := playGame.Play(location)
+			if err != nil {
+				fmt.Println(err)
+			}
+			if inserted {
+				break
+			}
+		}
+
 	}
 	printGameBoard(gameboard)
 
 	for playGame.GetGameStatus() == "Progress" {
 
-		fmt.Println(playGame.GetGameStatus())
-
 		fmt.Print(playGame.CurrentPlayer().PlayerName(), " enter cell number:")
-		fmt.Scan(&location)
 
-		playGame.Play(location)
+		value, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Please enter a valid number")
+		}
+		value = strings.TrimSpace(value)
+		location, err = strconv.Atoi(value)
+		if err != nil {
+			fmt.Println("Please enter a valid number")
+		} else {
+			_, err = playGame.Play(location)
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				printGameBoard(gameboard)
+			}
+		}
 
-		printGameBoard(gameboard)
 	}
 
 	if playGame.GetGameStatus() == "Win" {
@@ -78,9 +132,18 @@ func getFirstDataFromUser(players *[]player.PlayerDetails) string {
 
 	var player player.PlayerDetails
 	var name string
+	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Enter Your Name:")
-	fmt.Scan(&name)
+	value, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Please enter a valid name")
+	}
+	name = strings.TrimSpace(value)
+
+	if err != nil {
+		fmt.Println("Please enter a valid name")
+	}
 
 	player.SetPlayerName(name)
 

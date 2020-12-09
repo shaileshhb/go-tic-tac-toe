@@ -42,8 +42,8 @@ func (g *GameBoard) IsBoardFull() bool {
 // AddMarkFromBoard checks if board is full and if not put the mark at said location
 func (g *GameBoard) AddMarkFromBoard(playerMark string, location int) (bool, error) {
 
-	if location > g.boardSize*g.boardSize || location < 0 {
-		return false, &outOfCellError{cellOutOfBound: "Please enter a valid cell number"}
+	if location >= g.boardSize*g.boardSize || location < 0 {
+		return false, &outOfCellError{cellOutOfBound: "Please enter a cell number between 0 and 8"}
 	}
 
 	if g.IsBoardFull() == false {
