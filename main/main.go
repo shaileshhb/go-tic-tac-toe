@@ -33,6 +33,8 @@ func main() {
 			userBoardSize, err = strconv.Atoi(value)
 			if err != nil {
 				fmt.Println("Please enter a integer for board size")
+			} else if userBoardSize <= 2 {
+				fmt.Println("Board size should be greater than 2")
 			} else {
 				break
 			}

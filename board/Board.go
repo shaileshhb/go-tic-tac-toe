@@ -1,6 +1,8 @@
 package board
 
 import (
+	"strconv"
+
 	"github.com/shaileshhb/go-tic-tac-toe/cell"
 )
 
@@ -43,7 +45,8 @@ func (g *GameBoard) IsBoardFull() bool {
 func (g *GameBoard) AddMarkFromBoard(playerMark string, location int) (bool, error) {
 
 	if location >= g.boardSize*g.boardSize || location < 0 {
-		return false, &outOfCellError{cellOutOfBound: "Please enter a cell number between 0 and 8"}
+		str := "Please enter a cell number between 0 and" + strconv.Itoa(g.boardSize*g.boardSize-1)
+		return false, &outOfCellError{cellOutOfBound: str}
 	}
 
 	if g.IsBoardFull() == false {
