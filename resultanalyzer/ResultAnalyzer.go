@@ -10,7 +10,7 @@ func SetCurrentGameBoard(board *board.GameBoard) *AnalyzeResult {
 
 	return &AnalyzeResult{
 		CurrentResult: result.Progress,
-		GameBoard:     board,
+		board:         board,
 	}
 
 }
@@ -27,7 +27,7 @@ func (a *AnalyzeResult) CheckWinner() string {
 	if a.checkDiagonal() == result.Win {
 		return result.Win
 	}
-	if a.GameBoard.IsBoardFull() == true {
+	if a.board.IsBoardFull() == true {
 		return result.Draw
 	}
 
@@ -39,8 +39,8 @@ func (a *AnalyzeResult) checkRow() string {
 	j := 0
 	resultCount := 1
 	a.CurrentResult = result.Progress
-	boardSize := a.GameBoard.BoardSize()
-	currentGameBoard := a.GameBoard.GameBoard()
+	boardSize := a.board.BoardSize()
+	currentGameBoard := *a.board.GameBoard()
 
 	for i := 1; i < len(currentGameBoard); i++ {
 		if currentGameBoard[j] != "-" && currentGameBoard[j] == currentGameBoard[i] {
@@ -66,8 +66,8 @@ func (a *AnalyzeResult) checkColumn() string {
 	j := 0
 	resultCount := 1
 	a.CurrentResult = result.Progress
-	boardSize := a.GameBoard.BoardSize()
-	currentGameBoard := a.GameBoard.GameBoard()
+	boardSize := a.board.BoardSize()
+	currentGameBoard := *a.board.GameBoard()
 
 	for i := boardSize; j < len(currentGameBoard)/boardSize; i += boardSize {
 
@@ -95,8 +95,8 @@ func (a *AnalyzeResult) checkDiagonal() string {
 	resultCount := 1
 	resultFound := false
 	a.CurrentResult = result.Progress
-	boardSize := a.GameBoard.BoardSize()
-	currentGameBoard := a.GameBoard.GameBoard()
+	boardSize := a.board.BoardSize()
+	currentGameBoard := *a.board.GameBoard()
 
 	for i := (boardSize + 1); i < len(currentGameBoard); i += boardSize + 1 {
 
@@ -141,5 +141,5 @@ func (a *AnalyzeResult) GetStatus() string {
 // AnalyzeResult consists of CurrentResult and board
 type AnalyzeResult struct {
 	CurrentResult string
-	*board.GameBoard
+	board         *board.GameBoard
 }

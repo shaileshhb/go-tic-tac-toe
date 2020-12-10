@@ -10,6 +10,17 @@ var currentPlayer = 0
 var nextPlayer = 1
 var flag = 0
 
+// StartGame initailizes the contents required to play the game
+func StartGame(player *[]player.PlayerDetails, board *board.GameBoard, resultanalyzer *resultanalyzer.AnalyzeResult) *GameStructure {
+
+	return &GameStructure{
+		players:        player,
+		board:          board,
+		resultAnalyzer: resultanalyzer,
+	}
+
+}
+
 // Play starts playing the game
 func (p *GameStructure) Play(location int) (bool, error) {
 
@@ -38,17 +49,6 @@ func (p *GameStructure) CurrentPlayer() *player.PlayerDetails {
 
 func (p *GameStructure) NextPlayer() *player.PlayerDetails {
 	return &(*p.players)[nextPlayer]
-}
-
-// StartGame initailizes the contents required to play the game
-func StartGame(player *[]player.PlayerDetails, board *board.GameBoard, resultanalyzer *resultanalyzer.AnalyzeResult) *GameStructure {
-
-	return &GameStructure{
-		players:        player,
-		board:          board,
-		resultAnalyzer: resultanalyzer,
-	}
-
 }
 
 // GetGameStatus returns current result as string value

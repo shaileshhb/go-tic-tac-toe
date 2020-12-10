@@ -23,23 +23,23 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 
-	for true {
-		fmt.Print("Enter Board size:")
-		value, err := reader.ReadString('\n')
+getBoardSize:
+	fmt.Print("Enter Board size:")
+	value, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Please enter a integer for board size")
+		goto getBoardSize
+	} else {
+		value = strings.TrimSpace(value)
+		userBoardSize, err = strconv.Atoi(value)
 		if err != nil {
 			fmt.Println("Please enter a integer for board size")
-		} else {
-			value = strings.TrimSpace(value)
-			userBoardSize, err = strconv.Atoi(value)
-			if err != nil {
-				fmt.Println("Please enter a integer for board size")
-			} else if userBoardSize <= 2 {
-				fmt.Println("Board size should be greater than 2")
-			} else {
-				break
-			}
-
+			goto getBoardSize
+		} else if userBoardSize <= 2 {
+			fmt.Println("Board size should be greater than 2")
+			goto getBoardSize
 		}
+
 	}
 
 	var players []player.PlayerDetails
@@ -48,55 +48,54 @@ func main() {
 
 	playGame := game.StartGame(&players, gameboard, resultanalyzer)
 
-	playerName = getFirstDataFromUser(&players)
-	for true {
-		fmt.Print(playerName, " enter cell number:")
+	playerName = getNameFromUser(&players)
 
-		value, err := reader.ReadString('\n')
-		if err != nil {
-			fmt.Println("Please enter a valid number")
-		}
-		value = strings.TrimSpace(value)
-		location, err = strconv.Atoi(value)
-		if err != nil {
-			fmt.Println("Please enter a valid number")
-		} else {
-			inserted, err := playGame.Play(location)
-			if err != nil {
-				fmt.Println(err)
-			}
-			if inserted {
-				break
-			}
+getFirstPlayerCell:
+	fmt.Print(playerName, " enter cell number:")
 
-		}
-
+	value, err = reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Please enter a valid number")
+		goto getFirstPlayerCell
 	}
+	value = strings.TrimSpace(value)
+	location, err = strconv.Atoi(value)
+	if err != nil {
+		fmt.Println("Please enter a valid number")
+		goto getFirstPlayerCell
+	} else {
+		_, err := playGame.Play(location)
+		if err != nil {
+			fmt.Println(err)
+			goto getFirstPlayerCell
+		}
+	}
+
 	printGameBoard(gameboard)
 
-	playerName = getFirstDataFromUser(&players)
-	for true {
-		fmt.Print(playerName, " enter cell number:")
+	playerName = getNameFromUser(&players)
 
-		value, err := reader.ReadString('\n')
-		if err != nil {
-			fmt.Println("Please enter a valid number")
-		}
-		value = strings.TrimSpace(value)
-		location, err = strconv.Atoi(value)
-		if err != nil {
-			fmt.Println("Please enter a valid number")
-		} else {
-			inserted, err := playGame.Play(location)
-			if err != nil {
-				fmt.Println(err)
-			}
-			if inserted {
-				break
-			}
-		}
+getSecondPlayerCell:
+	fmt.Print(playerName, " enter cell number:")
 
+	value, err = reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Please enter a valid number")
+		goto getSecondPlayerCell
 	}
+	value = strings.TrimSpace(value)
+	location, err = strconv.Atoi(value)
+	if err != nil {
+		fmt.Println("Please enter a valid number")
+		goto getSecondPlayerCell
+	} else {
+		_, err := playGame.Play(location)
+		if err != nil {
+			fmt.Println(err)
+			goto getSecondPlayerCell
+		}
+	}
+
 	printGameBoard(gameboard)
 
 	for playGame.GetGameStatus() == "Progress" {
@@ -140,7 +139,7 @@ func checkName(name string) bool {
 	return true
 }
 
-func getFirstDataFromUser(players *[]player.PlayerDetails) string {
+func getNameFromUser(players *[]player.PlayerDetails) string {
 
 	var player player.PlayerDetails
 	var name string
@@ -181,7 +180,7 @@ func getFirstDataFromUser(players *[]player.PlayerDetails) string {
 
 func printGameBoard(g *board.GameBoard) {
 
-	board := g.GameBoard()
+	board := *g.GameBoard()
 	// fmt.Println(g.BoardSize())
 
 	j := 1

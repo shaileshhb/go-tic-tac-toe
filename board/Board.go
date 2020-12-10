@@ -9,10 +9,7 @@ import (
 //CreateBoard creates the board according to the given size
 func CreateBoard(boardSize int) *GameBoard {
 
-	board := make([]string, boardSize*boardSize)
-	for cell := range board {
-		board[cell] = "-"
-	}
+	board := cell.SetEmptyCells(boardSize)
 
 	return &GameBoard{
 		board:     board,
@@ -21,8 +18,8 @@ func CreateBoard(boardSize int) *GameBoard {
 }
 
 // GameBoard returns the created board
-func (g *GameBoard) GameBoard() []string {
-	return g.board
+func (g *GameBoard) GameBoard() *[]string {
+	return g.board.Cells()
 }
 
 // BoardSize returns the board size
@@ -33,8 +30,10 @@ func (g *GameBoard) BoardSize() int {
 // IsBoardFull returns false if it is not empty i.e. there exists "-" in board and return true if board is full
 func (g *GameBoard) IsBoardFull() bool {
 
-	for i := 0; i < len(g.board); i++ {
-		if g.board[i] == "-" {
+	board := *g.board.Cells()
+
+	for i := 0; i < len(board); i++ {
+		if board[i] == "-" {
 			return false
 		}
 	}
@@ -45,12 +44,12 @@ func (g *GameBoard) IsBoardFull() bool {
 func (g *GameBoard) AddMarkFromBoard(playerMark string, location int) (bool, error) {
 
 	if location >= g.boardSize*g.boardSize || location < 0 {
-		str := "Please enter a cell number between 0 and" + strconv.Itoa(g.boardSize*g.boardSize-1)
+		str := "Please enter a cell number between 0 and " + strconv.Itoa(g.boardSize*g.boardSize-1)
 		return false, &outOfCellError{cellOutOfBound: str}
 	}
 
 	if g.IsBoardFull() == false {
-		err := cell.MarkCellIfEmpty(&g.board, location, playerMark)
+		err := g.board.MarkCellIfEmpty(location, playerMark)
 		if err != nil {
 			return false, err
 		}
@@ -67,7 +66,7 @@ func (o *outOfCellError) Error() string {
 // GameBoard defines the board
 type GameBoard struct {
 	boardSize int
-	board     []string
+	board     *cell.Cell
 }
 
 type outOfCellError struct {
